@@ -14,6 +14,11 @@ const foodItemSchema = new mongoose.Schema({
     image: {
         type: String, // URL or placeholder
         default: ''
+    },
+    dietType: {
+        type: String,
+        enum: ['Veg', 'Non-Veg'],
+        default: 'Veg'
     }
 }, { timestamps: true });
 

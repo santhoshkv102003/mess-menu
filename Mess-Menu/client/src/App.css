@@ -187,7 +187,10 @@
     background: var(--glass-surface);
     border: 1px solid var(--glass-border);
     border-radius: var(--radius-lg);
-    padding: 1.5rem;
+    /* padding: 1.5rem;  <-- Removed to let overlay handle it if needed, or we add padding back to default items differently */
+    padding: 0;
+    min-height: 150px;
+    /* Ensure height for image visibility */
     transition: all var(--transition-smooth);
     position: relative;
     overflow: hidden;

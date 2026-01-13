@@ -68,13 +68,50 @@ exports.generateMonthlyMenu = async (req, res) => {
             });
         });
 
-        const sortedItems = Object.keys(itemCounts).sort((a, b) => itemCounts[b] - itemCounts[a]);
-        const top28 = sortedItems.slice(0, 28);
+        const allItems = await FoodItem.find();
+        const categories = { 'Breakfast': [], 'Lunch': [], 'Snack': [], 'Dinner': [] };
 
-        // Populate names for response
-        const menuItems = await FoodItem.find({ _id: { $in: top28 } });
+        allItems.forEach(item => {
+            if (categories[item.category]) {
+                categories[item.category].push({
+                    ...item.toObject(),
+                    voteCount: itemCounts[item._id] || 0
+                });
+            }
+        });
 
-        res.json({ suggestedItems: menuItems, counts: itemCounts });
+        // Sort by votes
+        Object.keys(categories).forEach(cat => {
+            categories[cat].sort((a, b) => b.voteCount - a.voteCount);
+        });
+
+        const topItems = {
+            'Breakfast': categories['Breakfast'].slice(0, 7),
+            'Lunch': categories['Lunch'].slice(0, 7),
+            'Snack': categories['Snack'].slice(0, 7),
+            'Dinner': categories['Dinner'].slice(0, 7)
+        };
+
+        const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+        const weekMenu = [];
+        const flatList = [];
+
+        for (let i = 0; i < 7; i++) {
+            const dayMenu = {
+                day: days[i],
+                breakfast: topItems['Breakfast'][i] || null,
+                lunch: topItems['Lunch'][i] || null,
+                snack: topItems['Snack'][i] || null,
+                dinner: topItems['Dinner'][i] || null
+            };
+            weekMenu.push(dayMenu);
+            if (dayMenu.breakfast) flatList.push(dayMenu.breakfast);
+            if (dayMenu.lunch) flatList.push(dayMenu.lunch);
+            if (dayMenu.snack) flatList.push(dayMenu.snack);
+            if (dayMenu.dinner) flatList.push(dayMenu.dinner);
+        }
+
+        res.json({ suggestedItems: flatList, weekMenu, counts: itemCounts });
     } catch (error) {
         res.status(500).json({ message: 'Error generating menu', error: error.message });
     }

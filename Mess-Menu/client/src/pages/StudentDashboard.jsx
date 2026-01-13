@@ -161,20 +161,81 @@ const StudentDashboard = () => {
 
                         {/* Active Category Content */}
                         <div>
-                            <h4 style={{ marginBottom: '1rem', color: 'var(--accent)' }}>{activeCategory} Menu</h4>
-                            <div className="food-grid">
-                                {foodItems.filter(item => item.category === activeCategory).map(item => (
-                                    <div
-                                        key={item._id}
-                                        className={`food-card ${selectedItems.includes(item._id) ? 'selected' : ''}`}
-                                        onClick={() => toggleMonthlySelection(item._id, item.category)}
-                                        style={{ cursor: 'pointer' }}
-                                    >
-                                        <strong>{item.name}</strong>
-                                        <p>{item.category}</p>
+                            {/* Veg Section */}
+                            {foodItems.filter(item => item.category === activeCategory && (item.dietType === 'Veg' || !item.dietType)).length > 0 && (
+                                <>
+                                    <h4 style={{ marginBottom: '1rem', color: '#28a745' }}>🥦 Veg</h4>
+                                    <div className="food-grid" style={{ marginBottom: '2rem' }}>
+                                        {foodItems.filter(item => item.category === activeCategory && (item.dietType === 'Veg' || !item.dietType)).map(item => (
+                                            <div
+                                                key={item._id}
+                                                className={`food-card ${selectedItems.includes(item._id) ? 'selected' : ''}`}
+                                                onClick={() => toggleMonthlySelection(item._id, item.category)}
+                                                style={{
+                                                    cursor: 'pointer',
+                                                    backgroundImage: item.image ? `url(${item.image})` : 'none',
+                                                    backgroundSize: 'cover',
+                                                    backgroundPosition: 'center',
+                                                    color: item.image ? 'white' : 'inherit',
+                                                    padding: item.image ? 0 : '1.5rem'
+                                                }}
+                                            >
+                                                <div className="card-content-overlay" style={item.image ? {
+                                                    background: 'rgba(0,0,0,0.6)',
+                                                    height: '100%',
+                                                    width: '100%',
+                                                    padding: '1rem',
+                                                    borderRadius: 'var(--radius-lg)',
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    justifyContent: 'center',
+                                                    textAlign: 'center'
+                                                } : {}}>
+                                                    <strong style={{ fontSize: '1.5rem', lineHeight: '1.3' }}>{item.name}</strong>
+                                                </div>
+                                            </div>
+                                        ))}
                                     </div>
-                                ))}
-                            </div>
+                                </>
+                            )}
+
+                            {/* Non-Veg Section */}
+                            {foodItems.filter(item => item.category === activeCategory && item.dietType === 'Non-Veg').length > 0 && (
+                                <>
+                                    <h4 style={{ marginBottom: '1rem', color: '#dc3545' }}>🍗 Non-Veg</h4>
+                                    <div className="food-grid">
+                                        {foodItems.filter(item => item.category === activeCategory && item.dietType === 'Non-Veg').map(item => (
+                                            <div
+                                                key={item._id}
+                                                className={`food-card ${selectedItems.includes(item._id) ? 'selected' : ''}`}
+                                                onClick={() => toggleMonthlySelection(item._id, item.category)}
+                                                style={{
+                                                    cursor: 'pointer',
+                                                    backgroundImage: item.image ? `url(${item.image})` : 'none',
+                                                    backgroundSize: 'cover',
+                                                    backgroundPosition: 'center',
+                                                    color: item.image ? 'white' : 'inherit',
+                                                    padding: item.image ? 0 : '1.5rem'
+                                                }}
+                                            >
+                                                <div className="card-content-overlay" style={item.image ? {
+                                                    background: 'rgba(0,0,0,0.6)',
+                                                    height: '100%',
+                                                    width: '100%',
+                                                    padding: '1rem',
+                                                    borderRadius: 'var(--radius-lg)',
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    justifyContent: 'center',
+                                                    textAlign: 'center'
+                                                } : {}}>
+                                                    <strong style={{ fontSize: '1.5rem', lineHeight: '1.3' }}>{item.name}</strong>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </>
+                            )}
                         </div>
 
                         <button onClick={submitMonthlyVote} className="btn-primary" style={{ marginTop: '2rem', width: '100%' }}>Submit Monthly Vote</button>
@@ -185,13 +246,32 @@ const StudentDashboard = () => {
                     <div className="card">
                         <h3>Current Menu</h3>
                         {menu ? (
-                            <div className="food-grid">
-                                {menu.items.map(item => (
-                                    <div key={item._id} className="food-card">
-                                        <strong>{item.name}</strong>
-                                        <p>{item.category}</p>
-                                    </div>
-                                ))}
+                            <div style={{ overflowX: 'auto' }}>
+                                <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '1rem' }}>
+                                    <thead>
+                                        <tr>
+                                            <th style={{ border: '1px solid var(--glass-border)', padding: '0.8rem' }}>Day</th>
+                                            <th style={{ border: '1px solid var(--glass-border)', padding: '0.8rem' }}>Breakfast</th>
+                                            <th style={{ border: '1px solid var(--glass-border)', padding: '0.8rem' }}>Lunch</th>
+                                            <th style={{ border: '1px solid var(--glass-border)', padding: '0.8rem' }}>Snack</th>
+                                            <th style={{ border: '1px solid var(--glass-border)', padding: '0.8rem' }}>Dinner</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'].map((day, index) => {
+                                            const dayItems = menu.items.slice(index * 4, (index + 1) * 4);
+                                            return (
+                                                <tr key={day}>
+                                                    <td style={{ border: '1px solid var(--glass-border)', padding: '0.8rem', fontWeight: 'bold' }}>{day}</td>
+                                                    <td style={{ border: '1px solid var(--glass-border)', padding: '0.8rem' }}>{dayItems[0]?.name || '-'}</td>
+                                                    <td style={{ border: '1px solid var(--glass-border)', padding: '0.8rem' }}>{dayItems[1]?.name || '-'}</td>
+                                                    <td style={{ border: '1px solid var(--glass-border)', padding: '0.8rem' }}>{dayItems[2]?.name || '-'}</td>
+                                                    <td style={{ border: '1px solid var(--glass-border)', padding: '0.8rem' }}>{dayItems[3]?.name || '-'}</td>
+                                                </tr>
+                                            );
+                                        })}
+                                    </tbody>
+                                </table>
                             </div>
                         ) : <p>No menu active for this month.</p>}
                     </div>
@@ -208,10 +288,29 @@ const StudentDashboard = () => {
                                             key={item._id}
                                             className={`food-card ${dislikedItems.includes(item._id) ? 'selected' : ''}`}
                                             onClick={() => toggleSelection(item._id, dislikedItems, setDislikedItems, 3)}
-                                            style={{ cursor: 'pointer', borderColor: dislikedItems.includes(item._id) ? 'red' : '#eee' }}
+                                            style={{
+                                                cursor: 'pointer',
+                                                borderColor: dislikedItems.includes(item._id) ? 'red' : '#eee',
+                                                backgroundImage: item.image ? `url(${item.image})` : 'none',
+                                                backgroundSize: 'cover',
+                                                backgroundPosition: 'center',
+                                                color: item.image ? 'white' : 'inherit',
+                                                padding: item.image ? 0 : '1.5rem'
+                                            }}
                                         >
-                                            <strong>{item.name}</strong>
-                                            <p>{item.category}</p>
+                                            <div className="card-content-overlay" style={item.image ? {
+                                                background: 'rgba(0,0,0,0.6)',
+                                                height: '100%',
+                                                width: '100%',
+                                                padding: '1rem',
+                                                borderRadius: 'var(--radius-lg)',
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                                textAlign: 'center'
+                                            } : {}}>
+                                                <strong style={{ fontSize: '1.5rem', lineHeight: '1.3' }}>{item.name}</strong>
+                                            </div>
                                         </div>
                                     ))}
                                 </div>
@@ -226,10 +325,28 @@ const StudentDashboard = () => {
                                     key={item._id}
                                     className={`food-card ${replacementItems.includes(item._id) ? 'selected' : ''}`}
                                     onClick={() => toggleSelection(item._id, replacementItems, setReplacementItems, 3)}
-                                    style={{ cursor: 'pointer' }}
+                                    style={{
+                                        cursor: 'pointer',
+                                        backgroundImage: item.image ? `url(${item.image})` : 'none',
+                                        backgroundSize: 'cover',
+                                        backgroundPosition: 'center',
+                                        color: item.image ? 'white' : 'inherit',
+                                        padding: item.image ? 0 : '1.5rem'
+                                    }}
                                 >
-                                    <strong>{item.name}</strong>
-                                    <p>{item.category}</p>
+                                    <div className="card-content-overlay" style={item.image ? {
+                                        background: 'rgba(0,0,0,0.6)',
+                                        height: '100%',
+                                        width: '100%',
+                                        padding: '1rem',
+                                        borderRadius: 'var(--radius-lg)',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        textAlign: 'center'
+                                    } : {}}>
+                                        <strong style={{ fontSize: '1.5rem', lineHeight: '1.3' }}>{item.name}</strong>
+                                    </div>
                                 </div>
                             ))}
                         </div>

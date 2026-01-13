@@ -7,7 +7,7 @@ const AdminDashboard = () => {
     const { logout, user } = useAuth();
     const [activeTab, setActiveTab] = useState('food');
     const [foodItems, setFoodItems] = useState([]);
-    const [newItem, setNewItem] = useState({ name: '', category: 'Breakfast' });
+    const [newItem, setNewItem] = useState({ name: '', category: 'Breakfast', dietType: 'Veg', image: '' });
     const [menuData, setMenuData] = useState(null);
 
     useEffect(() => {
@@ -27,7 +27,7 @@ const AdminDashboard = () => {
         e.preventDefault();
         try {
             await api.post('/admin/food-item', newItem);
-            setNewItem({ name: '', category: 'Breakfast' });
+            setNewItem({ name: '', category: 'Breakfast', dietType: 'Veg', image: '' });
             fetchFoodItems();
             alert('Item added!');
         } catch (err) {
@@ -93,6 +93,23 @@ const AdminDashboard = () => {
                                     <option>Snack</option>
                                     <option>Dinner</option>
                                 </select>
+                                <select
+                                    className="form-input"
+                                    value={newItem.dietType}
+                                    onChange={e => setNewItem({ ...newItem, dietType: e.target.value })}
+                                    style={{ width: '120px' }}
+                                >
+                                    <option>Veg</option>
+                                    <option>Non-Veg</option>
+                                </select>
+                                <input
+                                    type="text"
+                                    placeholder="Image URL (optional)"
+                                    className="form-input"
+                                    value={newItem.image || ''}
+                                    onChange={e => setNewItem({ ...newItem, image: e.target.value })}
+                                    style={{ flex: 1 }}
+                                />
                                 <button type="submit" className="btn-primary" style={{ width: '150px' }}>Add Item</button>
                             </form>
                         </div>
@@ -101,9 +118,26 @@ const AdminDashboard = () => {
                             <h3>Food Items ({foodItems.length})</h3>
                             <div className="food-grid">
                                 {foodItems.map(item => (
-                                    <div key={item._id} className="food-card">
-                                        <strong>{item.name}</strong>
-                                        <p>{item.category}</p>
+                                    <div key={item._id} className="food-card" style={{
+                                        backgroundImage: item.image ? `url(${item.image})` : 'none',
+                                        backgroundSize: 'cover',
+                                        backgroundPosition: 'center',
+                                        color: item.image ? 'white' : 'inherit',
+                                        padding: item.image ? 0 : '1.5rem'
+                                    }}>
+                                        <div style={item.image ? {
+                                            background: 'rgba(0,0,0,0.6)',
+                                            height: '100%',
+                                            width: '100%',
+                                            padding: '1rem',
+                                            display: 'flex',
+                                            flexDirection: 'column',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            textAlign: 'center'
+                                        } : {}}>
+                                            <strong style={{ fontSize: '1.2rem', marginBottom: '0.5rem' }}>{item.name}</strong>
+                                        </div>
                                     </div>
                                 ))}
                             </div>
@@ -119,12 +153,29 @@ const AdminDashboard = () => {
 
                         {menuData && (
                             <div>
-                                <h4>Suggested Menu ({menuData.suggestedItems.length} items)</h4>
-                                <ul>
-                                    {menuData.suggestedItems.map(item => (
-                                        <li key={item._id}>{item.name} ({item.category}) - Votes: {menuData.counts[item._id]}</li>
-                                    ))}
-                                </ul>
+                                <h4>Suggested Weekly Menu</h4>
+                                <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '1rem' }}>
+                                    <thead>
+                                        <tr>
+                                            <th style={{ border: '1px solid var(--glass-border)', padding: '0.8rem' }}>Day</th>
+                                            <th style={{ border: '1px solid var(--glass-border)', padding: '0.8rem' }}>Breakfast</th>
+                                            <th style={{ border: '1px solid var(--glass-border)', padding: '0.8rem' }}>Lunch</th>
+                                            <th style={{ border: '1px solid var(--glass-border)', padding: '0.8rem' }}>Snack</th>
+                                            <th style={{ border: '1px solid var(--glass-border)', padding: '0.8rem' }}>Dinner</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {menuData.weekMenu && menuData.weekMenu.map((day, index) => (
+                                            <tr key={index}>
+                                                <td style={{ border: '1px solid var(--glass-border)', padding: '0.8rem', fontWeight: 'bold' }}>{day.day}</td>
+                                                <td style={{ border: '1px solid var(--glass-border)', padding: '0.8rem' }}>{day.breakfast ? `${day.breakfast.name} (${menuData.counts[day.breakfast._id]} votes)` : '-'}</td>
+                                                <td style={{ border: '1px solid var(--glass-border)', padding: '0.8rem' }}>{day.lunch ? `${day.lunch.name} (${menuData.counts[day.lunch._id]} votes)` : '-'}</td>
+                                                <td style={{ border: '1px solid var(--glass-border)', padding: '0.8rem' }}>{day.snack ? `${day.snack.name} (${menuData.counts[day.snack._id]} votes)` : '-'}</td>
+                                                <td style={{ border: '1px solid var(--glass-border)', padding: '0.8rem' }}>{day.dinner ? `${day.dinner.name} (${menuData.counts[day.dinner._id]} votes)` : '-'}</td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
                                 <button onClick={handleLockMenu} className="btn-primary" style={{ width: '200px', marginTop: '1rem', backgroundColor: '#28a745' }}>Lock This Menu</button>
                             </div>
                         )}
