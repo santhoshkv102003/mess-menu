@@ -19,8 +19,20 @@
             "destination": "/server/index.js"
         },
         {
+            "source": "/assets/(.*)",
+            "destination": "/client/assets/$1"
+        },
+        {
+            "source": "/images/(.*)",
+            "destination": "/client/images/$1"
+        },
+        {
+            "source": "/(.*)\\.(ico|png|jpg|jpeg|svg|css|js)",
+            "destination": "/client/$1.$2"
+        },
+        {
             "source": "/(.*)",
-            "destination": "/client/$1"
+            "destination": "/client/index.html"
         }
     ]
 }
