@@ -44,9 +44,9 @@ const Register = () => {
                 <span className={`material-icons-round ${isDark ? 'block' : 'hidden'}`}>light_mode</span>
             </button>
 
-            <main className="w-full max-w-[1100px] min-h-[680px] flex flex-col md:flex-row shadow-2xl rounded-3xl overflow-hidden m-4 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800">
-                {/* Left Side - Image/Hero */}
-                <div className="relative w-full md:w-1/2 overflow-hidden bg-slate-100 dark:bg-slate-800">
+            <main className="w-full max-w-[1100px] flex flex-col md:flex-row shadow-2xl rounded-3xl overflow-hidden m-4 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 mx-auto">
+                {/* Left Side - Image/Hero - Stacked on Mobile */}
+                <div className="relative w-full md:w-1/2 h-[150px] md:h-auto overflow-hidden bg-slate-100 dark:bg-slate-800">
                     <img
                         alt="Fresh healthy dining experience"
                         className="absolute inset-0 w-full h-full object-cover"
@@ -72,7 +72,7 @@ const Register = () => {
                     </div>
                 </div>
 
-                {/* Right Side - Form */}
+                {/* Right Side - Form - Full Width on Mobile */}
                 <div className="w-full md:w-1/2 p-8 md:p-12 lg:p-16 flex flex-col justify-center bg-white dark:bg-slate-900 transition-colors">
                     <div className="max-w-md mx-auto w-full">
                         <div className="mb-8">
