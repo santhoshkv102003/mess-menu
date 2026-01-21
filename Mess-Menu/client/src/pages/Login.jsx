@@ -83,16 +83,22 @@ const Login = () => {
                             <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">Welcome back</h2>
                             <p className="text-ocean-muted dark:text-slate-400">Please enter your student credentials to continue.</p>
                         </div>
-                        <form onSubmit={handleSubmit} className="space-y-6">
+                        <form onSubmit={handleSubmit} className="space-y-6" autoComplete="off">
+                            {/* Dummy inputs to confuse browser autofill */}
+                            <input type="text" style={{ display: 'none' }} />
+                            <input type="password" style={{ display: 'none' }} />
+
                             <div>
-                                <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2" htmlFor="email">Email Address</label>
+                                <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2" htmlFor="login_email_field">Email Address</label>
                                 <div className="relative">
                                     <span className="material-icons-round absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-xl">alternate_email</span>
                                     <input
                                         className="w-full pl-12 pr-4 py-3.5 bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 rounded-2xl focus:ring-2 focus:ring-primary focus:border-primary transition-all text-slate-900 dark:text-white placeholder:text-slate-400"
-                                        id="email"
+                                        id="login_email_field"
+                                        name="login_email_field"
                                         type="email"
                                         placeholder="student@university.edu"
+                                        autoComplete="off"
                                         value={formData.email}
                                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                                         required
@@ -101,16 +107,18 @@ const Login = () => {
                             </div>
                             <div>
                                 <div className="flex items-center justify-between mb-2">
-                                    <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300" htmlFor="password">Password</label>
+                                    <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300" htmlFor="login_password_field">Password</label>
                                     <a className="text-sm font-semibold text-primary hover:underline underline-offset-4" href="#">Forgot Password?</a>
                                 </div>
                                 <div className="relative">
                                     <span className="material-icons-round absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-xl">lock_open</span>
                                     <input
                                         className="w-full pl-12 pr-12 py-3.5 bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 rounded-2xl focus:ring-2 focus:ring-primary focus:border-primary transition-all text-slate-900 dark:text-white placeholder:text-slate-400"
-                                        id="password"
+                                        id="login_password_field"
+                                        name="login_password_field"
                                         type={showPassword ? "text" : "password"}
                                         placeholder="••••••••"
+                                        autoComplete="new-password"
                                         value={formData.password}
                                         onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                                         required
